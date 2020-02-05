@@ -215,6 +215,7 @@ workflows:
 
          - macos_cdtime_rerender:
               requires:
+                 - macos_setup
                  - cdat_info
          - macos_cdtime_py2:
               requires:
@@ -225,6 +226,7 @@ workflows:
 
          - linux_cdtime_rerender:
               requires:
+                 - linux_setup
                  - cdat_info
          - linux_cdtime_py2:
               requires:
