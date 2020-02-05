@@ -1,0 +1,56 @@
+{
+  "8.2": {
+  	 "cdat": {
+                 "cdat_info": {
+                    	      "version": "8.2",
+                              "build": "0",
+                              "type": "noarch"
+                              },
+                 "cdtime": {
+		 	   "version": "3.1.2",
+                           "build": "0",
+                           "type": "arch"
+                           },
+                 "cdms2": {
+		 	  "version": "3.1.4",
+                          "build": "0",
+                          "type": "arch"
+                          },
+                 "genutil": {
+		 	    "version": "8.2",
+                            "build": "0",
+                            "type": "arch"
+                            },
+                 "cdutil": {
+		 	   "version": "8.2",
+                           "build": "0",
+                           "type": "noarch"
+                          },
+                 "vtk-cdat": {
+		 	     "version": "8.2.0.8.2",
+                             "build": "0",
+                             "type": "arch"
+                             },	
+	 	 "dv3d": {
+     	     	 	 "version": "8.2", 
+	       		 "build": "0",
+			 "type": "noarch"
+	       		 },
+		 "vcs": {
+     	   	 	"version": "8.2", 
+	    		"build": "0",
+			"type": "noarch"
+	    		},
+     	 	 "wk": {
+     	    	       "version": "8.2", 
+	    	       "build": "0",
+            	       "type": "noarch"
+	    	       },
+     	 	 "vcsaddons": {
+     	    	       	      "version": "8.2", 
+	    	       	      "build": "0",
+            		      "type": "arch"
+	    	       	      }  
+	        }
+  }
+}
