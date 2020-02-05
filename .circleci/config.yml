@@ -103,10 +103,6 @@ jobs:
          BUILD_VARIANT_VERSION: "noarch"
       steps:
          - checkout
-         - attach_workspace:
-              at: .
-         - run: pwd
-         - run: ls
          - run: *setup_miniconda
          - run: *conda_rerender
          - run: *conda_build
@@ -123,8 +119,7 @@ jobs:
          PKG_NAME: "cdtime"
       steps:
          - checkout
-         - attach_workspace:
-              at: .
+         - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
               root: .
@@ -154,8 +149,7 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
+         - run: *setup_miniconda
          - run: *conda_build
          - run: *conda_upload
 
@@ -186,8 +180,7 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - run: *setup_miniconda
          - run: *conda_build
          - run: *conda_upload
 
@@ -200,8 +193,7 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - run: *setup_miniconda
          - run: *conda_build
          - run: *conda_upload
 
@@ -210,15 +202,9 @@ workflows:
    version: 2
    cdat:
       jobs:
-         - macos_setup
-         - linux_setup
-         - cdat_info:
-              requires:
-                 - linux_setup
-
+         - cdat_info
          - macos_cdtime_rerender:
               requires:
-                 - macos_setup
                  - cdat_info
          - macos_cdtime_py2:
               requires:
@@ -229,7 +215,6 @@ workflows:
 
          - linux_cdtime_rerender:
               requires:
-                 - linux_setup
                  - cdat_info
          - linux_cdtime_py2:
               requires:
