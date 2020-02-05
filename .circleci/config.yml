@@ -213,7 +213,7 @@ workflows:
 
          - macos_cdtime_rerender:
               requires:
-                 - cdtime
+                 - cdat_info
          - macos_cdtime_py2:
               requires:
                  - macos_cdtime_rerender
@@ -223,7 +223,7 @@ workflows:
 
          - linux_cdtime_rerender:
               requires:
-                 - cdtime
+                 - cdat_info
          - linux_cdtime_py2:
               requires:
                  - linux_cdtime_rerender
