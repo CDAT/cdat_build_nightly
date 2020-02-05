@@ -16,7 +16,7 @@ aliases:
        source $WORKDIR/miniconda/etc/profile.d/conda.sh
        conda activate base
 
-       RELEASE_INFO="./release_info/release_info.json"
+       RELEASE_INFO="./info/release_info.json"
        BUILD_SCRIPT="$WORKDIR/conda-recipes/build_tools/conda_build.py"
        GET_RELEASE_INFO="$WORKDIR/conda-recipes/build_tools/get_release_info.py"
        CDAT_VERSION="8.2"
