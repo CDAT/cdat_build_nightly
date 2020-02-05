@@ -103,7 +103,10 @@ jobs:
          BUILD_VARIANT_VERSION: "noarch"
       steps:
          - checkout
+         - attach_workspace:
+              at: .
          - run: pwd
+         - run: ls
          - run: *setup_miniconda
          - run: *conda_rerender
          - run: *conda_build
