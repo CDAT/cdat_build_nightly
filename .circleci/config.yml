@@ -149,7 +149,8 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - run: *setup_miniconda
+         - attach_workspace:
+              at: .
          - run: *conda_build
          - run: *conda_upload
 
@@ -163,8 +164,7 @@ jobs:
          CDAT_VERSION: "8.2.1"
       steps:
          - checkout
-         - attach_workspace:
-              at: .
+         - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
               root: .
@@ -180,7 +180,8 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - run: *setup_miniconda
+         - attach_workspace:
+              at: .
          - run: *conda_build
          - run: *conda_upload
 
@@ -193,7 +194,8 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - run: *setup_miniconda
+         - attach_workspace:
+              at: .
          - run: *conda_build
          - run: *conda_upload
 
