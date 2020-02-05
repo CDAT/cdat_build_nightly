@@ -23,12 +23,12 @@ aliases:
        if [ -z "$REPO_NAME" ]; then
           REPO_NAME=$PKG_NAME
        fi
-       python $GET_RELEASE_INFO -r $CDAT_VERSION -t cdat -p $PKG_NAME -r $REPO_NAME -f $RELEASE_INFO > $WORKDIR/pkginfo
+       python $GET_RELEASE_INFO -r $CDAT_VERSION -t cdat -p $PKG_NAME -f $RELEASE_INFO > $WORKDIR/pkginfo
        version=`cat $WORKDIR/pkginfo | awk -F: '{ print $1 }'`
        build=`cat $WORKDIR/pkginfo | awk -F: '{ print $2 }'`
        # version is 'last stable version'
        # for nightly, build number is always 0
-       python $BUILD_SCRIPT -w $WORKDIR -l $version -B $build -p $PKG_NAME --do_rerender
+       python $BUILD_SCRIPT -w $WORKDIR -l $version -B $build -p $PKG_NAME -r $REPO_NAME --do_rerender
 
   - &conda_build
     name: conda_build
