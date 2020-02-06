@@ -469,22 +469,10 @@ jobs:
 workflows:
    version: 2
    cdat:
-      jobs:
-         #
-         # cdutil
-         #
-         - cdutil:
-              requires:
-                 - macos_genutil_py2
-                 - macos_genutil_py37
-                 - linux_genutil_py2
-                 - linux_genutil_py37
          #
          # vtk-cdat
          #
-         - macos_vtk_cdat_rerender:
-              requires:
-                 - cdutil
+         - macos_vtk_cdat_rerender
          - macos_vtk_cdat_py2:
               requires:
                  - macos_vtk_cdat_rerender
@@ -492,9 +480,7 @@ workflows:
               requires:
                  - macos_vtk_cdat_rerender
 
-         - linux_vtk_cdat_rerender:
-              requires:
-                 - cdutil
+         - linux_vtk_cdat_rerender
          - linux_vtk_cdat_py2:
               requires:
                  - linux_vtk_cdat_rerender
