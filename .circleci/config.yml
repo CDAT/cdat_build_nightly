@@ -469,6 +469,7 @@ jobs:
 workflows:
    version: 2
    cdat:
+      jobs:
          #
          # vtk-cdat
          #
