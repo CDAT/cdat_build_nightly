@@ -378,6 +378,23 @@ jobs:
          - run: *conda_upload
 
    #
+   # dv3d
+   # 
+   dv3d:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "dv3d"
+         BUILD_VARIANT_VERSION: "noarch"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   #
    # vtk-cdat
    #
    macos_vtk_cdat_rerender:
@@ -465,6 +482,9 @@ jobs:
               at: .
          - run: *conda_build
          - run: *conda_upload
+   #
+   # dv3d
+   #
 
 workflows:
    version: 2
@@ -551,24 +571,19 @@ workflows:
                  - linux_genutil_py2
                  - linux_genutil_py37
          #
-         # vtk-cdat
+         # vtk-cdat -- ONLY do this when needed
          #
-         - macos_vtk_cdat_rerender:
-              requires:
-                 - cdutil
-         - macos_vtk_cdat_py2:
-              requires:
-                 - macos_vtk_cdat_rerender
-         - macos_vtk_cdat_py37:
-              requires:
-                 - macos_vtk_cdat_rerender
-
-         - linux_vtk_cdat_rerender:
-              requires:
-                 - cdutil
-         - linux_vtk_cdat_py2:
-              requires:
-                 - linux_vtk_cdat_rerender
-         - linux_vtk_cdat_py37:
-              requires:
-                 - linux_vtk_cdat_rerender
+         #- macos_vtk_cdat_rerender
+         #- macos_vtk_cdat_py2:
+         #     requires:
+         #        - macos_vtk_cdat_rerender
+         #- macos_vtk_cdat_py37:
+         #     requires:
+         #        - macos_vtk_cdat_rerender
+         #- linux_vtk_cdat_rerender
+         #- linux_vtk_cdat_py2:
+         #     requires:
+         #        - linux_vtk_cdat_rerender
+         #- linux_vtk_cdat_py37:
+         #     requires:
+         #        - linux_vtk_cdat_rerender
