@@ -407,9 +407,6 @@ jobs:
       steps:
          - attach_workspace:
               at: .
-         - run: pwd
-         - run: ls -al
-         - run: ls -al macos_build
          - run: *conda_build
          - run: *conda_upload
 
