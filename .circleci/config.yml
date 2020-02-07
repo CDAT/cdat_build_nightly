@@ -46,6 +46,7 @@ aliases:
        if [ $type == 'noarch' ]; then
           python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME -r $REPO_NAME --build_version $type --do_build
        else
+          echo "python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME -r $REPO_NAME --build_version $BUILD_VARIANT_VERSION --do_build"
           python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME -r $REPO_NAME --build_version $BUILD_VARIANT_VERSION --do_build
        fi
 
@@ -406,6 +407,9 @@ jobs:
       steps:
          - attach_workspace:
               at: .
+         - run: pwd
+         - run: ls -al
+         - run: git status
          - run: *conda_build
          - run: *conda_upload
 
