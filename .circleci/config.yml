@@ -409,7 +409,7 @@ jobs:
               at: .
          - run: pwd
          - run: ls -al
-         - run: git status
+         - run: ls -al macos_build
          - run: *conda_build
          - run: *conda_upload
 
