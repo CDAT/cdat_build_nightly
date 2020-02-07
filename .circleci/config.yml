@@ -395,13 +395,13 @@ jobs:
               paths: 
                  - macos_build
 
-   macos_vtk_cdat_py2:
+   macos_vtk_cdat_py2_mesaFalse:
       macos:
          xcode: "11.3.0"
       environment:
          WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VERSION: "2.7"
+         BUILD_VARIANT_VER: "2.7vtk_with_osmesaFalse"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
@@ -409,14 +409,44 @@ jobs:
          - run: *conda_build
          - run: *conda_upload
 
-   macos_vtk_cdat_py37:
+   macos_vtk_cdat_py2_mesaTrue:
       macos:
          xcode: "11.3.0"
       environment:
          WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VERSION: "3.7"
+         BUILD_VARIANT_VER: "2.7vtk_with_osmesaTrue"
          ARCH: "osx-64"
+         UPLOAD_OPTION: "_mesalib"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_vtk_cdat_py37_mesaFalse:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VER: "3.7vtk_with_osmesaFalse"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_vtk_cdat_py37_mesaTrue:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VER: "3.7vtk_with_osmesaTrue"
+         ARCH: "osx-64"
+         UPLOAD_OPTION: "_mesalib"
       steps:
          - attach_workspace:
               at: .
@@ -438,13 +468,13 @@ jobs:
               paths: 
                  - linux_build
 
-   linux_vtk_cdat_py2:
+   linux_vtk_cdat_py2_mesaFalse:
       machine:
          image: circleci/classic:latest
       environment:
          WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VERSION: "2.7"
+         BUILD_VARIANT_VER: "2.7vtk_with_osmesaFalse"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
@@ -452,14 +482,44 @@ jobs:
          - run: *conda_build
          - run: *conda_upload
 
-   linux_vtk_cdat_py37:
+   linux_vtk_cdat_py2_mesaTrue:
       machine:
          image: circleci/classic:latest
       environment:
          WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VERSION: "3.7"
+         BUILD_VARIANT_VER: "2.7vtk_with_osmesaTrue"
          ARCH: "linux-64"
+         UPLOAD_OPTION: "_mesalib"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vtk_cdat_py37_mesaFalse:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VER: "3.7vtk_with_osmesaFalse"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vtk_cdat_py37_mesaTrue:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VER: "3.7vtk_with_osmesaTrue"
+         ARCH: "linux-64"
+         UPLOAD_OPTION: "_mesalib"
       steps:
          - attach_workspace:
               at: .
@@ -474,17 +534,29 @@ workflows:
          # vtk-cdat
          #
          - macos_vtk_cdat_rerender
-         - macos_vtk_cdat_py2:
+         - macos_vtk_cdat_py2_mesaFalse:
               requires:
                  - macos_vtk_cdat_rerender
-         - macos_vtk_cdat_py37:
+         - macos_vtk_cdat_py2_mesaTrue:
+              requires:
+                 - macos_vtk_cdat_rerender
+         - macos_vtk_cdat_py37_mesaFalse:
+              requires:
+                 - macos_vtk_cdat_rerender
+         - macos_vtk_cdat_py37_mesaTrue:
               requires:
                  - macos_vtk_cdat_rerender
 
          - linux_vtk_cdat_rerender
-         - linux_vtk_cdat_py2:
+         - linux_vtk_cdat_py2_mesaFalse:
               requires:
                  - linux_vtk_cdat_rerender
-         - linux_vtk_cdat_py37:
+         - linux_vtk_cdat_py2_mesaTrue:
+              requires:
+                 - linux_vtk_cdat_rerender
+         - linux_vtk_cdat_py37_mesaFalse:
+              requires:
+                 - linux_vtk_cdat_rerender
+         - linux_vtk_cdat_py37_mesaTrue:
               requires:
                  - linux_vtk_cdat_rerender
