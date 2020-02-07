@@ -402,7 +402,7 @@ jobs:
       environment:
          WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "2.7vtk_with_osmesaFalse"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaFalse"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
@@ -419,7 +419,7 @@ jobs:
       environment:
          WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "2.7vtk_with_osmesaTrue"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaTrue"
          ARCH: "osx-64"
          UPLOAD_OPTION: "_mesalib"
       steps:
@@ -434,7 +434,7 @@ jobs:
       environment:
          WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "3.7vtk_with_osmesaFalse"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaFalse"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
@@ -448,7 +448,7 @@ jobs:
       environment:
          WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "3.7vtk_with_osmesaTrue"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaTrue"
          ARCH: "osx-64"
          UPLOAD_OPTION: "_mesalib"
       steps:
@@ -478,7 +478,7 @@ jobs:
       environment:
          WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "2.7vtk_with_osmesaFalse"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaFalse"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
@@ -492,7 +492,7 @@ jobs:
       environment:
          WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "2.7vtk_with_osmesaTrue"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaTrue"
          ARCH: "linux-64"
          UPLOAD_OPTION: "_mesalib"
       steps:
@@ -507,7 +507,7 @@ jobs:
       environment:
          WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "3.7vtk_with_osmesaFalse"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaFalse"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
@@ -521,7 +521,7 @@ jobs:
       environment:
          WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vtk-cdat"
-         BUILD_VARIANT_VER: "3.7vtk_with_osmesaTrue"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaTrue"
          ARCH: "linux-64"
          UPLOAD_OPTION: "_mesalib"
       steps:
