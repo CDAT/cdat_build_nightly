@@ -210,8 +210,6 @@ jobs:
       environment:
          WORKDIR: /Users/distiller/project/macos_dummy_wk
       steps:
-         - attach_workspace:
-              at: .
          - persist_to_workspace:
               root: .
               paths: 
@@ -337,8 +335,8 @@ workflows:
 
          - wk:
               requires:
-                 - macos_genutil_py2
-                 - macos_genutil_py37
+                 #- macos_genutil_py2
+                 #- macos_genutil_py37
                  - linux_genutil_py2
                  - linux_genutil_py37
 
