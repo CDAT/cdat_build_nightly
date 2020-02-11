@@ -290,6 +290,12 @@ jobs:
          - run: *conda_upload
          - run: *cleanup
 
+   last_job:
+      macos:
+         xcode: "11.3.0"
+      steps:
+         - run: echo "...last stage..."
+
 workflows:
    version: 2
    cdat:
@@ -342,3 +348,15 @@ workflows:
          - linux_vcsaddons_py37:
               requires:
                  - linux_vcsaddons_rerender
+
+         - last_job:
+             requires:
+                - macos_genutil_py2
+                - macos_genutil_py37
+                - linux_genutil_py2
+                - linux_genutil_py37
+                - wk
+                - macos_vcsaddons_py2
+                - macos_vcsaddons_py37
+                - linux_vcsaddons_py2
+                - linux_vcsaddons_py37
