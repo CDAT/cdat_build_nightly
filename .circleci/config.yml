@@ -78,6 +78,13 @@ aliases:
        git checkout release
        ./configure.py --bootstrap
 
+  - &cleanup
+    name: cleanup
+    command: |
+        if [[ ! -z $WORKDIR ]]; then
+           rm -rf $WORKDIR
+        fi
+
 jobs:
    #
    # genutil
@@ -86,88 +93,91 @@ jobs:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_genutil_build
+         WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "genutil"
       steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /Users/distiller/project/genutil
+              root: .
               paths: 
-                 - macos_genutil_build
+                 - macos_build
 
    macos_genutil_py2:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_genutil_build
+         WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "genutil"
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project/genutil
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    macos_genutil_py37:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_genutil_build
+         WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "genutil"
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project/genutil
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    linux_genutil_rerender:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_genutil_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "genutil"
       steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /home/circleci/project/genutil
+              root: .
               paths: 
-                 - linux_genutil_build
+                 - linux_build
 
    linux_genutil_py2:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_genutil_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "genutil"
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project/genutil
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    linux_genutil_py37:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_genutil_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "genutil"
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project/genutil
+              at: .
          - run: *conda_build
          - run: *conda_upload
-
+         - run: *cleanup
 
    #
    # wk
@@ -176,7 +186,7 @@ jobs:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_wk_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "wk"
          BUILD_VARIANT_VERSION: "noarch"
       steps:
@@ -185,6 +195,7 @@ jobs:
          - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    #
    # vcsaddons
@@ -193,87 +204,91 @@ jobs:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_vcsaddons_build
+         WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vcsaddons"
       steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /Users/distiller/project/wk
+              root: .
               paths: 
-                 - macos_vcsaddons_build
+                 - macos_build
 
    macos_vcsaddons_py2:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_vcsaddons_build
+         WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vcsaddons"
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project/vcsaddons
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    macos_vcsaddons_py37:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_vcsaddons_build
+         WORKDIR: /Users/distiller/project/macos_build
          PKG_NAME: "vcsaddons"
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project/vcsaddons
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    linux_vcsaddons_rerender:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_vcsaddons_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vcsaddons"
       steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /home/circleci/project/vcsaddons
+              root: .
               paths: 
-                 - linux_vcsaddons_build
+                 - linux_build
 
    linux_vcsaddons_py2:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_vcsaddons_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vcsaddons"
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project/vcsaddons
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
    linux_vcsaddons_py37:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_vcsaddons_build
+         WORKDIR: /home/circleci/project/linux_build
          PKG_NAME: "vcsaddons"
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project/vcsaddons
+              at: .
          - run: *conda_build
          - run: *conda_upload
+         - run: *cleanup
 
 workflows:
    version: 2
