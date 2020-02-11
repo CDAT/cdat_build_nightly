@@ -100,7 +100,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: macos_genutil_build
+              root: .
               paths: 
                  - macos_genutil_build
 
@@ -143,7 +143,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: linux_genutil_build
+              root: .
               paths: 
                  - linux_genutil_build
 
@@ -156,15 +156,10 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - checkout
          - attach_workspace:
               at: linux_genutil_build
          - run: *conda_build
          - run: *conda_upload
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_genutil_build
 
    linux_genutil_py37:
       machine:
@@ -175,15 +170,10 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - checkout
          - attach_workspace:
               at: linux_genutil_build
          - run: *conda_build
          - run: *conda_upload
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_genutil_build
 
    #
    # wk
@@ -201,10 +191,7 @@ jobs:
          - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
-         - persist_to_workspace:
-              root: linux_wk_build
-              paths: 
-                 - linux_wk_build
+
 
    macos_dummy_wk:
       macos:
@@ -214,10 +201,6 @@ jobs:
       steps:
          - run: echo "...macos_dummy_wk..."
          - run: mkdir $WORKDIR
-         - persist_to_workspace:
-              root: macos_dummy_wk
-              paths: 
-                 - macos_dummy_wk
 
    #
    # vcsaddons
@@ -233,7 +216,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: macos_vcsaddons_build
+              root: .
               paths: 
                  - macos_vcsaddons_build
 
@@ -246,7 +229,6 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
-         - checkout
          - attach_workspace:
               at: macos_vcsaddons_build
          - run: *conda_build
@@ -261,7 +243,6 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - checkout
          - attach_workspace:
               at: macos_vcsaddons_build
          - run: *conda_build
@@ -278,7 +259,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: linux_vcsaddons_build
+              root: .
               paths: 
                  - linux_vcsaddons_build
 
@@ -291,7 +272,6 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - checkout
          - attach_workspace:
               at: linux_vcsaddons_build
          - run: *conda_build
@@ -306,7 +286,6 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - checkout
          - attach_workspace:
               at: linux_vcsaddons_build
          - run: *conda_build
