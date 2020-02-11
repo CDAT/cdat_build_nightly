@@ -331,17 +331,17 @@ workflows:
                  - linux_genutil_py2
                  - linux_genutil_py37
 
-         - macos_dummy_wk:
-              requires:
-                 - macos_genutil_py2
-                 - macos_genutil_py37
+         #- macos_dummy_wk:
+         #     requires:
+         #        - macos_genutil_py2
+         #        - macos_genutil_py37
 
          #
          # vcsaddons
          #
          - macos_vcsaddons_rerender:
               requires:
-                 - macos_dummy_wk
+                 - wk
          - macos_vcsaddons_py2:
               requires:
                  - macos_vcsaddons_rerender
