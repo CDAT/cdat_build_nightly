@@ -335,12 +335,12 @@ workflows:
               requires:
                  - linux_genutil_rerender
 
-         #- wk:
-         #     requires:
-         #        - macos_genutil_py2
-         #        - macos_genutil_py37
-         #        - linux_genutil_py2
-         #        - linux_genutil_py37
+         - wk:
+              requires:
+                 - macos_genutil_py2
+                 - macos_genutil_py37
+                 - linux_genutil_py2
+                 - linux_genutil_py37
 
          #
          # vcsaddons
