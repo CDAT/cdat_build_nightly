@@ -211,6 +211,7 @@ jobs:
          WORKDIR: /Users/distiller/project/macos_dummy_wk
       steps:
          - run: echo "...macos_dummy_wk..."
+         - run: mkdir $WORKDIR
          - persist_to_workspace:
               root: .
               paths: 
