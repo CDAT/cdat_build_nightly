@@ -160,7 +160,10 @@ jobs:
               at: .
          - run: *conda_build
          - run: *conda_upload
-
+         - persist_to_workspace:
+              root: .
+              paths: 
+                 - linux_genutil_build
 
    linux_genutil_py37:
       machine:
@@ -175,6 +178,10 @@ jobs:
               at: .
          - run: *conda_build
          - run: *conda_upload
+         - persist_to_workspace:
+              root: .
+              paths: 
+                 - linux_genutil_build
 
    #
    # wk
