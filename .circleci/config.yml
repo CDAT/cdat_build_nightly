@@ -333,7 +333,7 @@ workflows:
 
          - linux_vcsaddons_rerender:
               requires:
-                 - linux_wk_dummy
+                 - wk
          - linux_vcsaddons_py2:
               requires:
                  - linux_vcsaddons_rerender
