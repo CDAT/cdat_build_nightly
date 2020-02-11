@@ -93,7 +93,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /Users/distiller/project
+              root: /Users/distiller/project/genutil
               paths: 
                  - macos_genutil_build
 
@@ -107,7 +107,7 @@ jobs:
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project
+              at: /Users/distiller/project/genutil
          - run: *conda_build
          - run: *conda_upload
 
@@ -121,7 +121,7 @@ jobs:
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project
+              at: /Users/distiller/project/genutil
          - run: *conda_build
          - run: *conda_upload
 
@@ -136,7 +136,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /home/circleci/project
+              root: /home/circleci/project/genutil
               paths: 
                  - linux_genutil_build
 
@@ -150,7 +150,7 @@ jobs:
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project
+              at: /home/circleci/project/genutil
          - run: *conda_build
          - run: *conda_upload
 
@@ -164,7 +164,7 @@ jobs:
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project
+              at: /home/circleci/project/genutil
          - run: *conda_build
          - run: *conda_upload
 
@@ -200,7 +200,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /Users/distiller/project
+              root: /Users/distiller/project/wk
               paths: 
                  - macos_vcsaddons_build
 
@@ -214,7 +214,7 @@ jobs:
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project
+              at: /Users/distiller/project/vcsaddons
          - run: *conda_build
          - run: *conda_upload
 
@@ -228,7 +228,7 @@ jobs:
          ARCH: "osx-64"
       steps:
          - attach_workspace:
-              at: /Users/distiller/project
+              at: /Users/distiller/project/vcsaddons
          - run: *conda_build
          - run: *conda_upload
 
@@ -243,7 +243,7 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - persist_to_workspace:
-              root: /home/circleci/project
+              root: /home/circleci/project/vcsaddons
               paths: 
                  - linux_vcsaddons_build
 
@@ -257,7 +257,7 @@ jobs:
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project
+              at: /home/circleci/project/vcsaddons
          - run: *conda_build
          - run: *conda_upload
 
@@ -271,7 +271,7 @@ jobs:
          ARCH: "linux-64"
       steps:
          - attach_workspace:
-              at: /home/circleci/project
+              at: /home/circleci/project/vcsaddons
          - run: *conda_build
          - run: *conda_upload
 
