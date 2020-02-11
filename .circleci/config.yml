@@ -210,6 +210,7 @@ jobs:
       environment:
          WORKDIR: /Users/distiller/project/macos_dummy_wk
       steps:
+         - run: echo "...macos_dummy_wk..."
          - persist_to_workspace:
               root: .
               paths: 
@@ -340,12 +341,17 @@ workflows:
                  - linux_genutil_py2
                  - linux_genutil_py37
 
+         - macos_dummy_wk:
+              requires:
+                 - macos_genutil_py2
+                 - macos_genutil_py37
+
          #
          # vcsaddons
          #
          - macos_vcsaddons_rerender:
               requires:
-                 - wk
+                 - macos_dummy_wk
          - macos_vcsaddons_py2:
               requires:
                  - macos_vcsaddons_rerender
