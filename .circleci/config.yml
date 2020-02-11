@@ -79,6 +79,112 @@ aliases:
        ./configure.py --bootstrap
 
 jobs:
+   #
+   # genutil
+   #
+   macos_genutil_rerender:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_genutil_build
+         PKG_NAME: "genutil"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - persist_to_workspace:
+              root: /Users/distiller/project
+              paths: 
+                 - macos_genutil_build
+
+   macos_genutil_py2:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: /Users/distiller/project
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_genutil_py37:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: /Users/distiller/project
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_genutil_rerender:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_genutil_build
+         PKG_NAME: "genutil"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - persist_to_workspace:
+              root: /home/circleci/project
+              paths: 
+                 - linux_genutil_build
+
+   linux_genutil_py2:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: /home/circleci/project
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_genutil_py37:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: /home/circleci/project
+         - run: *conda_build
+         - run: *conda_upload
+
+
+   #
+   # wk
+   # 
+   wk:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_wk_build
+         PKG_NAME: "wk"
+         BUILD_VARIANT_VERSION: "noarch"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
 
    #
    # vcsaddons
@@ -174,9 +280,37 @@ workflows:
    cdat:
       jobs:
          #
+         # genutil
+         #
+         - macos_genutil_rerender
+         - macos_genutil_py2:
+              requires:
+                 - macos_genutil_rerender
+         - macos_genutil_py37:
+              requires:
+                 - macos_genutil_rerender
+
+         - linux_genutil_rerender
+         - linux_genutil_py2:
+              requires:
+                 - linux_genutil_rerender
+         - linux_genutil_py37:
+              requires:
+                 - linux_genutil_rerender
+
+         - wk:
+              requires:
+                 - macos_genutil_py2
+                 - macos_genutil_py37
+                 - linux_genutil_py2
+                 - linux_genutil_py37
+
+         #
          # vcsaddons
          #
-         - macos_vcsaddons_rerender
+         - macos_vcsaddons_rerender:
+              requires:
+                 - wk
          - macos_vcsaddons_py2:
               requires:
                  - macos_vcsaddons_rerender
@@ -184,7 +318,9 @@ workflows:
               requires:
                  - macos_vcsaddons_rerender
 
-         - linux_vcsaddons_rerender
+         - linux_vcsaddons_rerender:
+              requires:
+                 - wk
          - linux_vcsaddons_py2:
               requires:
                  - linux_vcsaddons_rerender
