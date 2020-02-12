@@ -815,11 +815,16 @@ workflows:
              requires:
                 - vcs
 
+         - macos_dummy_wk:
+              requires:
+                - vcs
+
          #
          # vcsaddons
          #
          - macos_vcsaddons_rerender:
               requires:
+                 - wk
                  - macos_dummy_wk
          - macos_vcsaddons_py2:
               requires:
@@ -831,6 +836,7 @@ workflows:
          - linux_vcsaddons_rerender:
               requires:
                  - wk
+                 - macos_dummy_wk
          - linux_vcsaddons_py2:
               requires:
                  - linux_vcsaddons_rerender
