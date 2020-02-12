@@ -99,21 +99,6 @@ jobs:
    #
    # cdtime
    # 
-   macos_cdtime_rerender:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_cdtime_build
-         PKG_NAME: "cdtime"
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - macos_cdtime_build
-
    macos_cdtime_py2:
       macos:
          xcode: "11.3.0"
@@ -123,8 +108,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -137,25 +123,11 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
-         - run: *conda_build
-         - run: *conda_upload
-
-   linux_cdtime_rerender:
-      machine:
-         image: circleci/classic:latest
-      environment:
-         WORKDIR: /home/circleci/project/linux_cdtime_build
-         PKG_NAME: "cdtime"
-      steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_cdtime_build
+         - run: *conda_build
+         - run: *conda_upload
 
    linux_cdtime_py2:
       machine:
@@ -166,8 +138,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -180,30 +153,15 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
    #
    # cdms2
    # 
-   macos_cdms_rerender:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_cdms_build
-         PKG_NAME: "cdms2"
-         REPO_NAME: "cdms"
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - macos_cdms_build
-
    macos_cdms_py2:
       macos:
          xcode: "11.3.0"
@@ -214,8 +172,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -229,26 +188,11 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
-         - run: *conda_build
-         - run: *conda_upload
-
-   linux_cdms_rerender:
-      machine:
-         image: circleci/classic:latest
-      environment:
-         WORKDIR: /home/circleci/project/linux_cdms_build
-         PKG_NAME: "cdms2"
-         REPO_NAME: "cdms"
-      steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_cdms_build
+         - run: *conda_build
+         - run: *conda_upload
 
    linux_cdms_py2:
       machine:
@@ -260,8 +204,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -275,28 +220,14 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
    #
    # genutil
    #
-   macos_genutil_rerender:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_genutil_build
-         PKG_NAME: "genutil"
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - macos_genutil_build
-
    macos_genutil_py2:
       macos:
          xcode: "11.3.0"
@@ -306,8 +237,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -320,25 +252,11 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
-         - run: *conda_build
-         - run: *conda_upload
-
-   linux_genutil_rerender:
-      machine:
-         image: circleci/classic:latest
-      environment:
-         WORKDIR: /home/circleci/project/linux_genutil_build
-         PKG_NAME: "genutil"
-      steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_genutil_build
+         - run: *conda_build
+         - run: *conda_upload
 
    linux_genutil_py2:
       machine:
@@ -349,8 +267,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -363,8 +282,9 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -576,42 +496,15 @@ jobs:
          BUILD_VARIANT_VERSION: "noarch"
       steps:
          - checkout
-         - attach_workspace:
-              at: .
          - run: *setup_miniconda
          - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
-   macos_dummy_wk:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_dummy_wk
-      steps:
-         - attach_workspace:
-              at: .
-         - run: echo "...macos_dummy_wk..."
-         - run: mkdir $WORKDIR
 
    #
    # vcsaddons
    #
-   macos_vcsaddons_rerender:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_vcsaddons_build
-         PKG_NAME: "vcsaddons"
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - macos_vcsaddons_build
-
    macos_vcsaddons_py2:
       macos:
          xcode: "11.3.0"
@@ -621,8 +514,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -635,25 +529,11 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
-         - run: *conda_build
-         - run: *conda_upload
-
-   linux_vcsaddons_rerender:
-      machine:
-         image: circleci/classic:latest
-      environment:
-         WORKDIR: /home/circleci/project/linux_vcsaddons_build
-         PKG_NAME: "vcsaddons"
-      steps:
          - checkout
          - run: *setup_miniconda
          - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_vcsaddons_build
+         - run: *conda_build
+         - run: *conda_upload
 
    linux_vcsaddons_py2:
       machine:
@@ -664,8 +544,9 @@ jobs:
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -678,8 +559,9 @@ jobs:
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -691,73 +573,50 @@ workflows:
          #
          # cdtime
          #
-         - macos_cdtime_rerender:
-              requires:
-                 - cdat_info
          - macos_cdtime_py2:
               requires:
-                 - macos_cdtime_rerender
+                 - cdat_info
          - macos_cdtime_py37:
-              requires:
-                 - macos_cdtime_rerender
-
-         - linux_cdtime_rerender:
               requires:
                  - cdat_info
          - linux_cdtime_py2:
               requires:
-                 - linux_cdtime_rerender
+                 - cdat_info
          - linux_cdtime_py37:
               requires:
-                 - linux_cdtime_rerender
+                 - cdat_info
          #
          # cdms2
          #
-         - macos_cdms_rerender:
-              requires:
-                 - macos_cdtime_py2
-                 - macos_cdtime_py37
          - macos_cdms_py2:
               requires:
-                 - macos_cdms_rerender
+                 - macos_cdtime_py2
          - macos_cdms_py37:
               requires:
-                 - macos_cdms_rerender
+                 - macos_cdtime_py37
 
-         - linux_cdms_rerender:
-              requires:
-                 - linux_cdtime_py2
-                 - linux_cdtime_py37
          - linux_cdms_py2:
               requires:
-                 - linux_cdms_rerender
+                 - linux_cdtime_py2
          - linux_cdms_py37:
               requires:
-                 - linux_cdms_rerender
+                 - linux_cdtime_py37
          #
          # genutil
          #
-         - macos_genutil_rerender:
-              requires:
-                 - macos_cdms_py2
-                 - macos_cdms_py37
          - macos_genutil_py2:
               requires:
-                 - macos_genutil_rerender
+                 - macos_cdms2_py2
          - macos_genutil_py37:
               requires:
-                 - macos_genutil_rerender
+                 - macos_cdms2_py37
 
-         - linux_genutil_rerender:
-              requires:
-                 - linux_cdms_py2
-                 - linux_cdms_py37
          - linux_genutil_py2:
               requires:
-                 - linux_genutil_rerender
+                 - linux_cdms2_py2
          - linux_genutil_py37:
               requires:
-                 - linux_genutil_rerender
+                 - linux_cdms2_py37
          #
          # cdutil
          #
@@ -818,24 +677,16 @@ workflows:
          #
          # vcsaddons
          #
-         - macos_vcsaddons_rerender:
-              requires:
-                 - macos_genutil_py2
-                 - macos_genutil_py37
-                 - wk
          - macos_vcsaddons_py2:
               requires:
-                 - macos_vcsaddons_rerender
+                 - wk
          - macos_vcsaddons_py37:
               requires:
-                 - macos_vcsaddons_rerender
-
-         - linux_vcsaddons_rerender:
-              requires:
                  - wk
+
          - linux_vcsaddons_py2:
               requires:
-                 - linux_vcsaddons_rerender
+                 - wk
          - linux_vcsaddons_py37:
               requires:
-                 - linux_vcsaddons_rerender
+                 - wk
