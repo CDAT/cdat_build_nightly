@@ -606,17 +606,17 @@ workflows:
          #
          - macos_genutil_py2:
               requires:
-                 - macos_cdms2_py2
+                 - macos_cdms_py2
          - macos_genutil_py37:
               requires:
-                 - macos_cdms2_py37
+                 - macos_cdms_py37
 
          - linux_genutil_py2:
               requires:
-                 - linux_cdms2_py2
+                 - linux_cdms_py2
          - linux_genutil_py37:
               requires:
-                 - linux_cdms2_py37
+                 - linux_cdms_py37
          #
          # cdutil
          #
