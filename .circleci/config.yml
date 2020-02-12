@@ -187,8 +187,8 @@ jobs:
          BUILD_VARIANT_VERSION: "noarch"
       steps:
          - checkout
-         - attach_workspace:
-              at: .
+         #- attach_workspace:
+         #     at: .
          - run: *setup_miniconda
          - run: *conda_rerender
          - run: *conda_build
@@ -326,15 +326,15 @@ workflows:
 
          - wk:
               requires:
-                 #- macos_genutil_py2
-                 #- macos_genutil_py37
+                 - macos_genutil_py2
+                 - macos_genutil_py37
                  - linux_genutil_py2
                  - linux_genutil_py37
 
-         #- macos_dummy_wk:
-         #     requires:
-         #        - macos_genutil_py2
-         #        - macos_genutil_py37
+         - macos_dummy_wk:
+              requires:
+                 - macos_genutil_py2
+                 - macos_genutil_py37
 
          #
          # vcsaddons
