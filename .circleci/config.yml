@@ -20,12 +20,15 @@ aliases:
        BUILD_SCRIPT="$WORKDIR/conda-recipes/build_tools/conda_build.py"
        GET_RELEASE_INFO="$WORKDIR/conda-recipes/build_tools/get_release_info.py"
        CDAT_VERSION="8.2"
+       if [ -z "$REPO_NAME" ]; then
+          REPO_NAME=$PKG_NAME
+       fi
        python $GET_RELEASE_INFO -r $CDAT_VERSION -t cdat -p $PKG_NAME -f $RELEASE_INFO > $WORKDIR/pkginfo
        version=`cat $WORKDIR/pkginfo | awk -F: '{ print $1 }'`
        build=`cat $WORKDIR/pkginfo | awk -F: '{ print $2 }'`
        # version is 'last stable version'
        # for nightly, build number is always 0
-       python $BUILD_SCRIPT -w $WORKDIR -l $version -B $build -p $PKG_NAME --do_rerender
+       python $BUILD_SCRIPT -w $WORKDIR -l $version -B $build -p $PKG_NAME -r $REPO_NAME --do_rerender
 
   - &conda_build
     name: conda_build
@@ -37,10 +40,13 @@ aliases:
        conda config --set channel_priority strict
        BUILD_SCRIPT="$WORKDIR/conda-recipes/build_tools/conda_build.py"
        type=`cat $WORKDIR/pkginfo | awk -F: '{ print $3 }'`
+       if [ -z "$REPO_NAME" ]; then
+          REPO_NAME=$PKG_NAME
+       fi
        if [ $type == 'noarch' ]; then
-          python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME --build_version $type --do_build
+          python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME -r $REPO_NAME --build_version $type --do_build
        else
-          python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME --build_version $BUILD_VARIANT_VERSION --do_build
+          python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME -r $REPO_NAME --build_version $BUILD_VARIANT_VERSION --do_build
        fi
 
   - &conda_upload
@@ -57,40 +63,22 @@ aliases:
        UPLOAD_OPTIONS="-t $CONDA_UPLOAD_TOKEN upload -u $USER -l $LABEL"
        version=`cat $WORKDIR/pkginfo | awk -F: '{ print $1 }'`
        if [[ $BUILD_VARIANT_VERSION == 'noarch' ]]; then
-       	    anaconda $UPLOAD_OPTIONS $WORKDIR/miniconda/conda-bld/noarch/$PKG_NAME-$version*.tar.bz2 --force
+          anaconda $UPLOAD_OPTIONS $WORKDIR/miniconda/conda-bld/noarch/$PKG_NAME-$version.`date +%Y*`0.tar.bz2 --force
        else
           py_ver=`echo ${BUILD_VARIANT_VERSION/./}`
-          anaconda $UPLOAD_OPTIONS $WORKDIR/miniconda/conda-bld/$ARCH/$PKG_NAME-$version-py$py_ver*.tar.bz2 --force
+          anaconda $UPLOAD_OPTIONS $WORKDIR/miniconda/conda-bld/$ARCH/$PKG_NAME-$version.`date +%Y*`0.tar.bz2 --force
        fi
     no_output_timeout: 30m
 
+  - &install_ninja
+    name: install_ninja
+    command: |
+       git clone git://github.com/ninja-build/ninja.git $WORKDIR/ninja
+       cd $WORKDIR/ninja
+       git checkout release
+       ./configure.py --bootstrap
+
 jobs:
-   macos_setup:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_build
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - macos_build
-
-   linux_setup:
-      machine:
-         image: circleci/classic:latest
-      environment:
-         WORKDIR: /home/circleci/project/linux_build
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - persist_to_workspace:
-              root: .
-              paths:
-                 - linux_build
-
    #
    # cdat_info
    # 
@@ -98,7 +86,7 @@ jobs:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_build
+         WORKDIR: /home/circleci/project/linux_cdat_info_build
          PKG_NAME: "cdat_info"
          BUILD_VARIANT_VERSION: "noarch"
       steps:
@@ -111,32 +99,18 @@ jobs:
    #
    # cdtime
    # 
-   macos_cdtime_rerender:
-      macos:
-         xcode: "11.3.0"
-      environment:
-         WORKDIR: /Users/distiller/project/macos_build
-         PKG_NAME: "cdtime"
-      steps:
-         - checkout
-         - run: *setup_miniconda
-         - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - macos_build
-
    macos_cdtime_py2:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_build
+         WORKDIR: /Users/distiller/project/macos_cdtime_build
          PKG_NAME: "cdtime"
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "osx-64"
       steps:
-         - attach_workspace:
-              at: .
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -144,43 +118,29 @@ jobs:
       macos:
          xcode: "11.3.0"
       environment:
-         WORKDIR: /Users/distiller/project/macos_build
+         WORKDIR: /Users/distiller/project/macos_cdtime_build
          PKG_NAME: "cdtime"
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "osx-64"
       steps:
+         - checkout
          - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
-
-
-   linux_cdtime_rerender:
-      machine:
-         image: circleci/classic:latest
-      environment:
-         WORKDIR: /home/circleci/project/linux_build
-         PKG_NAME: "cdtime"
-         CDAT_VERSION: "8.2.1"
-      steps:
-         - checkout
-         - attach_workspace:
-              at: .
-         - run: *conda_rerender
-         - persist_to_workspace:
-              root: .
-              paths: 
-                 - linux_build
 
    linux_cdtime_py2:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_build
+         WORKDIR: /home/circleci/project/linux_cdtime_build
          PKG_NAME: "cdtime"
          BUILD_VARIANT_VERSION: "2.7"
          ARCH: "linux-64"
       steps:
+         - checkout
          - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
@@ -188,38 +148,545 @@ jobs:
       machine:
          image: circleci/classic:latest
       environment:
-         WORKDIR: /home/circleci/project/linux_build
+         WORKDIR: /home/circleci/project/linux_cdtime_build
          PKG_NAME: "cdtime"
          BUILD_VARIANT_VERSION: "3.7"
          ARCH: "linux-64"
       steps:
+         - checkout
          - run: *setup_miniconda
+         - run: *conda_rerender
          - run: *conda_build
          - run: *conda_upload
 
+   #
+   # cdms2
+   # 
+   macos_cdms_py2:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_cdms_build
+         PKG_NAME: "cdms2"
+         REPO_NAME: "cdms"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "osx-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_cdms_py37:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_cdms_build
+         PKG_NAME: "cdms2"
+         REPO_NAME: "cdms"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "osx-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_cdms_py2:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_cdms_build
+         PKG_NAME: "cdms2"
+         REPO_NAME: "cdms"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "linux-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_cdms_py37:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_cdms_build
+         PKG_NAME: "cdms2"
+         REPO_NAME: "cdms"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "linux-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+   #
+   # genutil
+   #
+   macos_genutil_py2:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "osx-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_genutil_py37:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "osx-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_genutil_py2:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "linux-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_genutil_py37:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_genutil_build
+         PKG_NAME: "genutil"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "linux-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   #
+   # cdutil
+   # 
+   cdutil:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_cdutil_build
+         PKG_NAME: "cdutil"
+         BUILD_VARIANT_VERSION: "noarch"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   #
+   # vtk-cdat
+   #
+   macos_vtk_cdat_rerender:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - persist_to_workspace:
+              root: .
+              paths: 
+                 - macos_vtk_cdat_build
+
+   macos_vtk_cdat_py2_mesaFalse:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaFalse"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_vtk_cdat_py2_mesaTrue:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaTrue"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_vtk_cdat_py37_mesaFalse:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaFalse"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_vtk_cdat_py37_mesaTrue:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaTrue"
+         ARCH: "osx-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vtk_cdat_rerender:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - persist_to_workspace:
+              root: .
+              paths: 
+                 - linux_vtk_cdat_build
+
+   linux_vtk_cdat_py2_mesaFalse:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaFalse"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vtk_cdat_py2_mesaTrue:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "2.7vtk_with_osmesaTrue"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vtk_cdat_py37_mesaFalse:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaFalse"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vtk_cdat_py37_mesaTrue:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vtk_cdat_build
+         PKG_NAME: "vtk-cdat"
+         BUILD_VARIANT_VERSION: "3.7vtk_with_osmesaTrue"
+         ARCH: "linux-64"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *conda_upload
+
+   #
+   # dv3d
+   # 
+   dv3d:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_dv3d_build
+         PKG_NAME: "dv3d"
+         BUILD_VARIANT_VERSION: "noarch"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   #
+   # vcs
+   # 
+   vcs:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vcs_build
+         PKG_NAME: "vcs"
+         BUILD_VARIANT_VERSION: "noarch"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   #
+   # wk
+   # 
+   wk:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_wk_build
+         PKG_NAME: "wk"
+         BUILD_VARIANT_VERSION: "noarch"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+
+   #
+   # vcsaddons
+   #
+   macos_vcsaddons_py2:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vcsaddons_build
+         PKG_NAME: "vcsaddons"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "osx-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   macos_vcsaddons_py37:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_vcsaddons_build
+         PKG_NAME: "vcsaddons"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "osx-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vcsaddons_py2:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vcsaddons_build
+         PKG_NAME: "vcsaddons"
+         BUILD_VARIANT_VERSION: "2.7"
+         ARCH: "linux-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
+
+   linux_vcsaddons_py37:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_vcsaddons_build
+         PKG_NAME: "vcsaddons"
+         BUILD_VARIANT_VERSION: "3.7"
+         ARCH: "linux-64"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - run: *conda_build
+         - run: *conda_upload
 
 workflows:
    version: 2
    cdat:
       jobs:
          - cdat_info
-         - macos_cdtime_rerender:
-              requires:
-                 - cdat_info
+         #
+         # cdtime
+         #
          - macos_cdtime_py2:
               requires:
-                 - macos_cdtime_rerender
+                 - cdat_info
          - macos_cdtime_py37:
-              requires:
-                 - macos_cdtime_rerender
-
-         - linux_cdtime_rerender:
               requires:
                  - cdat_info
          - linux_cdtime_py2:
               requires:
-                 - linux_cdtime_rerender
+                 - cdat_info
          - linux_cdtime_py37:
               requires:
-                 - linux_cdtime_rerender
-         
+                 - cdat_info
+         #
+         # cdms2
+         #
+         - macos_cdms_py2:
+              requires:
+                 - macos_cdtime_py2
+         - macos_cdms_py37:
+              requires:
+                 - macos_cdtime_py37
+
+         - linux_cdms_py2:
+              requires:
+                 - linux_cdtime_py2
+         - linux_cdms_py37:
+              requires:
+                 - linux_cdtime_py37
+         #
+         # genutil
+         #
+         - macos_genutil_py2:
+              requires:
+                 - macos_cdms_py2
+         - macos_genutil_py37:
+              requires:
+                 - macos_cdms_py37
+
+         - linux_genutil_py2:
+              requires:
+                 - linux_cdms_py2
+         - linux_genutil_py37:
+              requires:
+                 - linux_cdms_py37
+         #
+         # cdutil
+         #
+         - cdutil:
+              requires:
+                 - macos_genutil_py2
+                 - macos_genutil_py37
+                 - linux_genutil_py2
+                 - linux_genutil_py37
+         #
+         # vtk-cdat -- ONLY do this when needed
+         #
+         #- macos_vtk_cdat_rerender
+         #- macos_vtk_cdat_py2_mesaFalse:
+         #     requires:
+         #        - macos_vtk_cdat_rerender
+         #- macos_vtk_cdat_py2_mesaTrue:
+         #     requires:
+         #        - macos_vtk_cdat_rerender
+         #- macos_vtk_cdat_py37_mesaFalse:
+         #     requires:
+         #        - macos_vtk_cdat_rerender
+         #- macos_vtk_cdat_py37_mesaTrue:
+         #     requires:
+         #        - macos_vtk_cdat_rerender
+
+         #- linux_vtk_cdat_rerender
+         #- linux_vtk_cdat_py2_mesaFalse:
+         #     requires:
+         #        - linux_vtk_cdat_rerender
+         #- linux_vtk_cdat_py2_mesaTrue:
+         #     requires:
+         #        - linux_vtk_cdat_rerender
+         #- linux_vtk_cdat_py37_mesaFalse:
+         #     requires:
+         #        - linux_vtk_cdat_rerender
+         #- linux_vtk_cdat_py37_mesaTrue:
+         #     requires:
+         #        - linux_vtk_cdat_rerender
+
+
+         #
+         # dv3d -- if vtk-cdat gets rebuild, make this job depend on
+         #         vtk-cdat
+         #
+         - dv3d:
+             requires:
+                - cdutil
+
+         - vcs:
+             requires:
+                - dv3d
+
+         - wk:
+             requires:
+                - vcs
+
+         #
+         # vcsaddons
+         #
+         - macos_vcsaddons_py2:
+              requires:
+                 - wk
+         - macos_vcsaddons_py37:
+              requires:
+                 - wk
+
+         - linux_vcsaddons_py2:
+              requires:
+                 - wk
+         - linux_vcsaddons_py37:
+              requires:
+                 - wk
