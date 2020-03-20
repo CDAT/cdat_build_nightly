@@ -662,31 +662,31 @@ workflows:
          # dv3d -- if vtk-cdat gets rebuild, make this job depend on
          #         vtk-cdat
          #
-         - dv3d:
-             requires:
-                - cdutil
+         ##- dv3d:
+         ##    requires:
+         ##       - cdutil
 
-         - vcs:
-             requires:
-                - dv3d
+         ##- vcs:
+         ##    requires:
+         ##       - dv3d
 
-         - wk:
-             requires:
-                - vcs
+         ##- wk:
+         ##    requires:
+         ##       - vcs
 
          #
          # vcsaddons
          #
-         - macos_vcsaddons_py2:
-              requires:
-                 - wk
-         - macos_vcsaddons_py37:
-              requires:
-                 - wk
+         ##- macos_vcsaddons_py2:
+         ##     requires:
+         ##        - wk
+         ##- macos_vcsaddons_py37:
+         ##     requires:
+         ##        - wk
 
-         - linux_vcsaddons_py2:
-              requires:
-                 - wk
-         - linux_vcsaddons_py37:
-              requires:
-                 - wk
+         ##- linux_vcsaddons_py2:
+         ##     requires:
+         ##        - wk
+         ##- linux_vcsaddons_py37:
+         ##     requires:
+         ##        - wk
