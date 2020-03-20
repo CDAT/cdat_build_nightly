@@ -573,47 +573,47 @@ workflows:
          #
          # cdtime
          #
-         - macos_cdtime_py2:
-              requires:
-                 - cdat_info
+         #- macos_cdtime_py2:
+         #     requires:
+         #        - cdat_info
          - macos_cdtime_py37:
               requires:
                  - cdat_info
-         - linux_cdtime_py2:
-              requires:
-                 - cdat_info
+         #- linux_cdtime_py2:
+         #     requires:
+         #        - cdat_info
          - linux_cdtime_py37:
               requires:
                  - cdat_info
          #
          # cdms2
          #
-         - macos_cdms_py2:
-              requires:
-                 - macos_cdtime_py2
+         #- macos_cdms_py2:
+         #     requires:
+         #        - macos_cdtime_py2
          - macos_cdms_py37:
               requires:
                  - macos_cdtime_py37
 
-         - linux_cdms_py2:
-              requires:
-                 - linux_cdtime_py2
+         #- linux_cdms_py2:
+         #     requires:
+         #        - linux_cdtime_py2
          - linux_cdms_py37:
               requires:
                  - linux_cdtime_py37
          #
          # genutil
          #
-         - macos_genutil_py2:
-              requires:
-                 - macos_cdms_py2
+         #- macos_genutil_py2:
+         #     requires:
+         #        - macos_cdms_py2
          - macos_genutil_py37:
               requires:
                  - macos_cdms_py37
 
-         - linux_genutil_py2:
-              requires:
-                 - linux_cdms_py2
+         #- linux_genutil_py2:
+         #     requires:
+         #        - linux_cdms_py2
          - linux_genutil_py37:
               requires:
                  - linux_cdms_py37
@@ -622,9 +622,9 @@ workflows:
          #
          - cdutil:
               requires:
-                 - macos_genutil_py2
+                 #- macos_genutil_py2
                  - macos_genutil_py37
-                 - linux_genutil_py2
+                 #- linux_genutil_py2
                  - linux_genutil_py37
          #
          # vtk-cdat -- ONLY do this when needed
@@ -662,17 +662,17 @@ workflows:
          # dv3d -- if vtk-cdat gets rebuild, make this job depend on
          #         vtk-cdat
          #
-         ##- dv3d:
-         ##    requires:
-         ##       - cdutil
+         - dv3d:
+             requires:
+                - cdutil
 
-         ##- vcs:
-         ##    requires:
-         ##       - dv3d
+         - vcs:
+             requires:
+                - dv3d
 
-         ##- wk:
-         ##    requires:
-         ##       - vcs
+         - wk:
+             requires:
+                - vcs
 
          #
          # vcsaddons
@@ -680,13 +680,13 @@ workflows:
          ##- macos_vcsaddons_py2:
          ##     requires:
          ##        - wk
-         ##- macos_vcsaddons_py37:
-         ##     requires:
-         ##        - wk
+         - macos_vcsaddons_py37:
+              requires:
+                 - wk
 
          ##- linux_vcsaddons_py2:
          ##     requires:
          ##        - wk
-         ##- linux_vcsaddons_py37:
-         ##     requires:
-         ##        - wk
+         - linux_vcsaddons_py37:
+              requires:
+                 - wk
